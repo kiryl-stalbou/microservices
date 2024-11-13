@@ -1,0 +1,15 @@
+name: delivery_service
+version: 1.0.0
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  args: ^2.4.0
+  shelf: ^1.3.0
+  shelf_router: ^1.0.0
+
+dev_dependencies:
+  http: ^1.1.0
+  lints: ^4.0.0
+  test: ^1.24.0

@@ -1,0 +1,64 @@
+services:
+  cart_service:
+    build:
+      context: ./cart_service
+    ports:
+      - "8083:8083"
+    environment:
+      - PORT=8083
+    networks:
+      - microservices_network
+
+  delivery_service:
+    build:
+      context: ./delivery_service
+    ports:
+      - "8085:8085"
+    environment:
+      - PORT=8085
+    networks:
+      - microservices_network
+
+  payment_service:
+    build:
+      context: ./payment_service
+    ports:
+      - "8084:8084"
+    environment:
+      - PORT=8084
+    networks:
+      - microservices_network
+
+  product_service:
+    build:
+      context: ./product_service
+    ports:
+      - "8082:8082"
+    environment:
+      - PORT=8082
+    networks:
+      - microservices_network
+
+  review_service:
+    build:
+      context: ./review_service
+    ports:
+      - "8086:8086"
+    environment:
+      - PORT=8086
+    networks:
+      - microservices_network
+
+  user_service:
+    build:
+      context: ./user_service
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+    networks:
+      - microservices_network
+
+networks:
+  microservices_network:
+    driver: bridge
