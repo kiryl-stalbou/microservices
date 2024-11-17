@@ -1,7 +1,7 @@
 services:
   cart_service:
     build:
-      context: ./cart_service
+      context: services/cart_service
     ports:
       - "8083:8083"
     environment:
@@ -11,7 +11,7 @@ services:
 
   delivery_service:
     build:
-      context: ./delivery_service
+      context: services/delivery_service
     ports:
       - "8085:8085"
     environment:
@@ -21,7 +21,7 @@ services:
 
   payment_service:
     build:
-      context: ./payment_service
+      context: services/payment_service
     ports:
       - "8084:8084"
     environment:
@@ -31,7 +31,7 @@ services:
 
   product_service:
     build:
-      context: ./product_service
+      context: services/product_service
     ports:
       - "8082:8082"
     environment:
@@ -41,7 +41,7 @@ services:
 
   review_service:
     build:
-      context: ./review_service
+      context: services/review_service
     ports:
       - "8086:8086"
     environment:
@@ -51,7 +51,7 @@ services:
 
   user_service:
     build:
-      context: ./user_service
+      context: services/user_service
     ports:
       - "8081:8081"
     environment:

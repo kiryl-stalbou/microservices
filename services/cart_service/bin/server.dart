@@ -16,7 +16,7 @@ Future<void> main() async {
     Pipeline().addMiddleware(logRequests()).addHandler(_router.call),
     InternetAddress.anyIPv4,
     int.parse(Platform.environment['PORT'] ?? '8080'),
-  );
+  ); 
 
   print('CartService running on ${server.address.host}:${server.port}');
 }
