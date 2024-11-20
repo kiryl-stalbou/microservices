@@ -8,20 +8,20 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/cart.dart';
 
 final Router _router = Router()
-  ..get('/cart', _handleGetCart)
-  ..post('/cart', _handlePostCart);
+  ..get('/cart', _handleCartGetRequest)
+  ..post('/cart', _handleCartPostRequest);
 
 Future<void> main() async {
   final HttpServer server = await serve(
-    Pipeline().addMiddleware(logRequests()).addHandler(_router.call),
+    Pipeline().addMiddleware(logRequests()).addHandler(_router),
     InternetAddress.anyIPv4,
     int.parse(Platform.environment['PORT'] ?? '8080'),
-  ); 
+  );
 
   print('CartService running on ${server.address.host}:${server.port}');
 }
 
-Future<Response> _handleGetCart(Request request) async {
+Future<Response> _handleCartGetRequest(Request request) async {
   final String? userId = request.url.queryParameters['userId'];
 
   if (userId == null) return Response.badRequest(body: 'User not found');
@@ -36,7 +36,7 @@ Future<Response> _handleGetCart(Request request) async {
   );
 }
 
-Future<Response> _handlePostCart(Request request) async {
+Future<Response> _handleCartPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 

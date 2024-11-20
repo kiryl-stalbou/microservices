@@ -10,9 +10,9 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/user.dart';
 
 final Router _router = Router()
-  ..post('/register', _handleRegisterUser)
-  ..post('/login', _handleLoginUser)
-  ..get('/user', _handleGetUser);
+  ..post('/register', _handleRegisterUserPostRequest)
+  ..post('/login', _handleLoginUserPostRequest)
+  ..get('/user', _handleUserGetRequest);
 
 Future<void> main() async {
   final HttpServer server = await serve(
@@ -24,7 +24,7 @@ Future<void> main() async {
   print('UserService running on ${server.address.host}:${server.port}');
 }
 
-Future<Response> _handleRegisterUser(Request request) async {
+Future<Response> _handleRegisterUserPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 
@@ -42,7 +42,7 @@ Future<Response> _handleRegisterUser(Request request) async {
   return Response.badRequest(body: 'Invalid data format');
 }
 
-Future<Response> _handleLoginUser(Request request) async {
+Future<Response> _handleLoginUserPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 
@@ -62,7 +62,7 @@ Future<Response> _handleLoginUser(Request request) async {
   return Response.badRequest(body: 'Invalid data format');
 }
 
-Future<Response> _handleGetUser(Request request) async {
+Future<Response> _handleUserGetRequest(Request request) async {
   final String? userId = request.url.queryParameters['userId'];
 
   if (userId == null) return Response.badRequest(body: 'Invalid data format');

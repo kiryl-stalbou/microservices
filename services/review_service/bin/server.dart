@@ -8,8 +8,8 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/review.dart';
 
 final Router _router = Router()
-  ..get('/review', _handleGetReview)
-  ..post('/review', _handlePostReview);
+  ..get('/review', _handleReviewGetRequest)
+  ..post('/review', _handleReviewPostRequest);
 
 Future<void> main() async {
   final HttpServer server = await serve(
@@ -21,7 +21,7 @@ Future<void> main() async {
   print('ReviewService running on ${server.address.host}:${server.port}');
 }
 
-Future<Response> _handleGetReview(Request request) async {
+Future<Response> _handleReviewGetRequest(Request request) async {
   final String? productId = request.url.queryParameters['productId'];
 
   if (productId == null) return Response.badRequest(body: 'Missing productId');
@@ -34,7 +34,7 @@ Future<Response> _handleGetReview(Request request) async {
   );
 }
 
-Future<Response> _handlePostReview(Request request) async {
+Future<Response> _handleReviewPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 

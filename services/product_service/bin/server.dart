@@ -8,8 +8,8 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/product.dart';
 
 final Router _router = Router()
-  ..get('/product', _handleGetProduct)
-  ..post('/product', _handlePostProduct);
+  ..get('/product', _handleProductGetRequest)
+  ..post('/product', _handleProductPostRequest);
 
 Future<void> main() async {
   final HttpServer server = await serve(
@@ -21,7 +21,7 @@ Future<void> main() async {
   print('ProductService running on ${server.address.host}:${server.port}');
 }
 
-Future<Response> _handleGetProduct(Request request) async {
+Future<Response> _handleProductGetRequest(Request request) async {
   final String? productId = request.url.queryParameters['productId'];
 
   if (productId == null) return Response.badRequest(body: 'Missing productId');
@@ -31,12 +31,12 @@ Future<Response> _handleGetProduct(Request request) async {
   if (product == null) return Response.notFound('Product not found');
 
   return Response.ok(
-    jsonEncode(product.toJson()),
+    jsonEncode(product),
     headers: {'Content-Type': 'application/json'},
   );
 }
 
-Future<Response> _handlePostProduct(Request request) async {
+Future<Response> _handleProductPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 

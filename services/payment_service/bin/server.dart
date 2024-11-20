@@ -9,8 +9,8 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/payment.dart';
 
 final Router _router = Router()
-  ..get('/payment', _handleGetPayment)
-  ..post('/payment', _handlePostPayment);
+  ..get('/payment', _handlePaymentGetRequest)
+  ..post('/payment', _handlePaymentPostRequest);
 
 Future<void> main() async {
   final HttpServer server = await serve(
@@ -22,7 +22,7 @@ Future<void> main() async {
   print('PaymentService running on ${server.address.host}:${server.port}');
 }
 
-Future<Response> _handleGetPayment(Request request) async {
+Future<Response> _handlePaymentGetRequest(Request request) async {
   final String? userId = request.url.queryParameters['userId'];
   final String? orderId = request.url.queryParameters['orderId'];
 
@@ -37,12 +37,12 @@ Future<Response> _handleGetPayment(Request request) async {
   if (payment == null) return Response.notFound('Payment not found');
 
   return Response.ok(
-    jsonEncode(payment.toJson()),
+    jsonEncode(payment),
     headers: {'Content-Type': 'application/json'},
   );
 }
 
-Future<Response> _handlePostPayment(Request request) async {
+Future<Response> _handlePaymentPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 

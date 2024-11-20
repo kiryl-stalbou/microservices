@@ -8,8 +8,8 @@ import 'package:shelf_router/shelf_router.dart';
 import '../lib/order.dart';
 
 final Router _router = Router()
-  ..get('/order', _handleGetOrder)
-  ..post('/order', _handlePostOrder);
+  ..get('/order', _handleOrderGetRequest)
+  ..post('/order', _handleOrderPostRequest);
 
 Future<void> main() async {
   final HttpServer server = await serve(
@@ -21,7 +21,7 @@ Future<void> main() async {
   print('DeliveryService running on ${server.address.host}:${server.port}');
 }
 
-Future<Response> _handleGetOrder(Request request) async {
+Future<Response> _handleOrderGetRequest(Request request) async {
   final String? userId = request.url.queryParameters['userId'];
 
   if (userId == null) return Response.badRequest(body: 'User not found');
@@ -31,12 +31,12 @@ Future<Response> _handleGetOrder(Request request) async {
   if (order == null) return Response.notFound('Order not found');
 
   return Response.ok(
-    jsonEncode(order.toJson()),
+    jsonEncode(order),
     headers: {'Content-Type': 'application/json'},
   );
 }
 
-Future<Response> _handlePostOrder(Request request) async {
+Future<Response> _handleOrderPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 
