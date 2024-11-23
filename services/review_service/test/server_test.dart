@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:core/core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
@@ -14,6 +16,7 @@ void main() {
         ['run', 'bin/server.dart'],
         environment: {'PORT': port},
       );
+
       await process.stdout.first;
     });
 
@@ -24,9 +27,13 @@ void main() {
     test('/review, post returns 200', () async {
       final http.Response response = await http.post(
         Uri.parse('$host/review'),
-        headers: {'Content-Type': 'application/json'},
-        body: '{"productId": "1", "userId": "12345678", "rating": 4, "comment": "Great product!"}',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': AuthToken.test$,
+        },
+        body: '{"productId": "1", "rating": 4, "comment": "Great product!"}',
       );
+
       expect(response.statusCode, 200);
       expect(response.body, 'Review added successfully');
     });
@@ -34,7 +41,11 @@ void main() {
     test('/review, get returns 200', () async {
       final http.Response response = await http.get(
         Uri.parse('$host/review?productId=1'),
+        headers: <String, String>{
+          'Authorization': AuthToken.test$,
+        },
       );
+
       expect(response.statusCode, 200);
       expect(response.body.contains('"productId":"1"'), isTrue);
       expect(response.body.contains('"rating":4'), isTrue);

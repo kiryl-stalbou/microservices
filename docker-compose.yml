@@ -3,9 +3,9 @@ services:
     build:
       context: services/cart_service
     ports:
-      - "8083:8083"
+      - "8081:8081"
     environment:
-      - PORT=8083
+      - PORT=8081
     networks:
       - microservices_network
 
@@ -13,9 +13,9 @@ services:
     build:
       context: services/delivery_service
     ports:
-      - "8085:8085"
+      - "8082:8082"
     environment:
-      - PORT=8085
+      - PORT=8082
     networks:
       - microservices_network
 
@@ -23,9 +23,9 @@ services:
     build:
       context: services/payment_service
     ports:
-      - "8084:8084"
+      - "8083:8083"
     environment:
-      - PORT=8084
+      - PORT=8083
     networks:
       - microservices_network
 
@@ -33,9 +33,9 @@ services:
     build:
       context: services/product_service
     ports:
-      - "8082:8082"
+      - "8084:8084"
     environment:
-      - PORT=8082
+      - PORT=8084
     networks:
       - microservices_network
 
@@ -43,9 +43,9 @@ services:
     build:
       context: services/review_service
     ports:
-      - "8086:8086"
+      - "8085:8085"
     environment:
-      - PORT=8086
+      - PORT=8085
     networks:
       - microservices_network
 
@@ -53,9 +53,9 @@ services:
     build:
       context: services/user_service
     ports:
-      - "8081:8081"
+      - "8086:8086"
     environment:
-      - PORT=8081
+      - PORT=8086
     networks:
       - microservices_network
 

@@ -5,13 +5,11 @@ class Product {
 
   const Product(this.productId, this.name, this.price);
 
-  Map<String, Object?> toJson() {
-    return {
-      'productId': productId,
-      'name': name,
-      'price': price,
-    };
-  }
+  Map<String, Object?> toJson() => <String, Object?>{
+        'productId': productId,
+        'name': name,
+        'price': price,
+      };
 }
 
 final Map<String, Product> productById = <String, Product>{};

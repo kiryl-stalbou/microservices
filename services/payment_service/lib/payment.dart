@@ -1,18 +1,13 @@
 class Payment {
-  final String userId;
   final String orderId;
   final double amount;
 
-  const Payment(this.userId, this.orderId, this.amount);
+  const Payment(this.orderId, this.amount);
 
-  Map<String, Object?> toJson() {
-    return {
-      'userId': userId,
-      'orderId': orderId,
-      'amount': amount,
-      'status': 'paid', // Example static status
-    };
-  }
+  Map<String, Object?> toJson() => <String, Object?>{
+        'orderId': orderId,
+        'amount': amount,
+      };
 }
 
-final Map<String, List<Payment>> paymentByUserId = <String, List<Payment>>{};
+final Map<String, List<Payment>> paymentsByUserId = <String, List<Payment>>{};

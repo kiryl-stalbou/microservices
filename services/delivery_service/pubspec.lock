@@ -62,6 +62,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  core:
+    dependency: "direct main"
+    description:
+      path: core
+      ref: HEAD
+      resolved-ref: a397ca9f27ee1583739ad20b485aec73edbc1f81
+      url: "https://github.com/kiryl-stalbou/microservices.git"
+    source: git
+    version: "1.0.0"
   coverage:
     dependency: transitive
     description:

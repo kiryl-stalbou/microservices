@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -13,18 +14,19 @@ final Router _router = Router()
 
 Future<void> main() async {
   final HttpServer server = await serve(
-    Pipeline().addMiddleware(logRequests()).addHandler(_router),
+    Pipeline()
+        .addMiddleware(logRequests())
+        .addMiddleware(authRequests())
+        .addHandler(_router),
     InternetAddress.anyIPv4,
-    int.parse(Platform.environment['PORT'] ?? '8080'),
+    int.parse(Platform.environment['PORT'] ?? '8082'),
   );
 
   print('DeliveryService running on ${server.address.host}:${server.port}');
 }
 
 Future<Response> _handleOrderGetRequest(Request request) async {
-  final String? userId = request.url.queryParameters['userId'];
-
-  if (userId == null) return Response.badRequest(body: 'User not found');
+  final String userId = request.context['userId'] as String;
 
   final Order? order = orderByUserId[userId];
 
@@ -37,11 +39,13 @@ Future<Response> _handleOrderGetRequest(Request request) async {
 }
 
 Future<Response> _handleOrderPostRequest(Request request) async {
+  final String userId = request.context['userId'] as String;
+
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 
-  if (json case {'userId': String userId, 'address': String address}) {
-    orderByUserId[userId] = Order(userId, address);
+  if (json case {'address': String address}) {
+    orderByUserId[userId] = Order(address);
 
     return Response.ok('Order created successfully');
   }

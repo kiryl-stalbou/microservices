@@ -9,13 +9,11 @@ class User {
     required this.password,
   });
 
-  Map<String, Object?> toJson() {
-    return {
-      'userId': userId,
-      'username': username,
-      'password': password,
-    };
-  }
+  Map<String, Object?> toJson() => <String, Object?>{
+        'userId': userId,
+        'username': username,
+        'password': password,
+      };
 }
 
 final Map<String, User> usersById = <String, User>{};

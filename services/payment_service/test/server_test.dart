@@ -1,4 +1,6 @@
 import 'dart:io';
+
+import 'package:core/core.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
@@ -14,6 +16,7 @@ void main() {
         ['run', 'bin/server.dart'],
         environment: {'PORT': port},
       );
+
       await process.stdout.first;
     });
 
@@ -24,21 +27,27 @@ void main() {
     test('/payment, post returns 200', () async {
       final http.Response response = await http.post(
         Uri.parse('$host/payment'),
-        headers: {'Content-Type': 'application/json'},
-        body: '{"userId": "12345678", "orderId": "87654321", "amount": 100.00}',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': AuthToken.test$,
+        },
+        body: '{"orderId": "1", "amount": 100.00}',
       );
+
       expect(response.statusCode, 200);
       expect(response.body, 'Payment processed successfully');
     });
 
     test('/payment, get returns 200', () async {
       final http.Response response = await http.get(
-        Uri.parse('$host/payment?userId=12345678&orderId=87654321'),
+        Uri.parse('$host/payment?orderId=1'),
+        headers: <String, String>{
+          'Authorization': AuthToken.test$,
+        },
       );
+
       expect(response.statusCode, 200);
-      expect(response.body.contains('"userId":"12345678"'), isTrue);
-      expect(response.body.contains('"orderId":"87654321"'), isTrue);
-      expect(response.body.contains('"status":"paid"'), isTrue);
+      expect(response.body.contains('"orderId":"1"'), isTrue);
     });
   });
 }

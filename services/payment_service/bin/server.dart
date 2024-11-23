@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:core/core.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -14,23 +15,24 @@ final Router _router = Router()
 
 Future<void> main() async {
   final HttpServer server = await serve(
-    Pipeline().addMiddleware(logRequests()).addHandler(_router),
+    Pipeline()
+        .addMiddleware(logRequests())
+        .addMiddleware(authRequests())
+        .addHandler(_router),
     InternetAddress.anyIPv4,
-    int.parse(Platform.environment['PORT'] ?? '8080'),
+    int.parse(Platform.environment['PORT'] ?? '8083'),
   );
 
   print('PaymentService running on ${server.address.host}:${server.port}');
 }
 
 Future<Response> _handlePaymentGetRequest(Request request) async {
-  final String? userId = request.url.queryParameters['userId'];
+  final String userId = request.context['userId'] as String;
   final String? orderId = request.url.queryParameters['orderId'];
 
-  if (userId == null || orderId == null) {
-    return Response.badRequest(body: 'Missing parameters');
-  }
+  if (orderId == null) return Response.badRequest(body: 'Missing orderId');
 
-  final Payment? payment = paymentByUserId[userId]?.firstWhereOrNull(
+  final Payment? payment = paymentsByUserId[userId]?.firstWhereOrNull(
     (payment) => payment.orderId == orderId,
   );
 
@@ -43,13 +45,15 @@ Future<Response> _handlePaymentGetRequest(Request request) async {
 }
 
 Future<Response> _handlePaymentPostRequest(Request request) async {
+  final String userId = request.context['userId'] as String;
+
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 
-  if (json case {'userId': String userId, 'orderId': String orderId, 'amount': double amount}) {
-    final Payment payment = Payment(userId, orderId, amount);
+  if (json case {'orderId': String orderId, 'amount': double amount}) {
+    final Payment payment = Payment(orderId, amount);
 
-    paymentByUserId.update(
+    paymentsByUserId.update(
       userId,
       (List<Payment> payments) => payments..add(payment),
       ifAbsent: () => <Payment>[payment],

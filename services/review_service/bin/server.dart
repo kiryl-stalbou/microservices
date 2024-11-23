@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:core/core.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -13,9 +14,12 @@ final Router _router = Router()
 
 Future<void> main() async {
   final HttpServer server = await serve(
-    Pipeline().addMiddleware(logRequests()).addHandler(_router),
+    Pipeline()
+        .addMiddleware(logRequests())
+        .addMiddleware(authRequests())
+        .addHandler(_router),
     InternetAddress.anyIPv4,
-    int.parse(Platform.environment['PORT'] ?? '8080'),
+    int.parse(Platform.environment['PORT'] ?? '8085'),
   );
 
   print('ReviewService running on ${server.address.host}:${server.port}');
@@ -38,8 +42,8 @@ Future<Response> _handleReviewPostRequest(Request request) async {
   final String body = await request.readAsString();
   final Map<String, Object?> json = jsonDecode(body);
 
-  if (json case {'productId': String productId, 'userId': String userId, 'rating': int rating, 'comment': String comment}) {
-    final Review review = Review(productId, userId, rating, comment);
+  if (json case {'productId': String productId, 'rating': int rating, 'comment': String comment}) {
+    final Review review = Review(productId, rating, comment);
 
     reviewsByProductId.update(
       productId,

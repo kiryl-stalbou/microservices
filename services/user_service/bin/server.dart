@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-
 import 'package:collection/collection.dart';
+import 'package:core/core.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
@@ -16,9 +16,12 @@ final Router _router = Router()
 
 Future<void> main() async {
   final HttpServer server = await serve(
-    Pipeline().addMiddleware(logRequests()).addHandler(_router),
+    Pipeline()
+        .addMiddleware(logRequests())
+        .addMiddleware(authRequests())
+        .addHandler(_router),
     InternetAddress.anyIPv4,
-    int.parse(Platform.environment['PORT'] ?? '8080'),
+    int.parse(Platform.environment['PORT'] ?? '8086'),
   );
 
   print('UserService running on ${server.address.host}:${server.port}');
@@ -29,12 +32,20 @@ Future<Response> _handleRegisterUserPostRequest(Request request) async {
   final Map<String, Object?> json = jsonDecode(body);
 
   if (json case {'username': String username, 'password': String password}) {
-    final String userId = DateTime.now().millisecondsSinceEpoch.toString();
+    final String userId = (usersById.length + 1).toString();
 
-    usersById[userId] = User(userId: userId, username: username, password: password);
+    final User user = User(
+      userId: userId,
+      username: username,
+      password: password,
+    );
+
+    usersById[userId] = user;
+
+    final String authToken = AuthToken.create(user.toJson());
 
     return Response.ok(
-      jsonEncode({'userId': userId}),
+      jsonEncode({'auth_token': authToken}),
       headers: {'Content-Type': 'application/json'},
     );
   }
@@ -53,8 +64,10 @@ Future<Response> _handleLoginUserPostRequest(Request request) async {
 
     if (user == null) return Response.notFound('Invalid credentials');
 
+    final String authToken = AuthToken.create(user.toJson());
+
     return Response.ok(
-      jsonEncode({'userId': user.userId}),
+      jsonEncode({'auth_token': authToken}),
       headers: {'Content-Type': 'application/json'},
     );
   }
@@ -63,9 +76,7 @@ Future<Response> _handleLoginUserPostRequest(Request request) async {
 }
 
 Future<Response> _handleUserGetRequest(Request request) async {
-  final String? userId = request.url.queryParameters['userId'];
-
-  if (userId == null) return Response.badRequest(body: 'Invalid data format');
+  final String userId = request.context['userId'] as String;
 
   final User? user = usersById[userId];
 

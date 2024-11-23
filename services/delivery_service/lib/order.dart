@@ -1,15 +1,11 @@
 class Order {
-  final String userId;
   final String address;
 
-  Order(this.userId, this.address);
+  Order(this.address);
 
-  Map<String, String> toJson() {
-    return {
-      'userId': userId,
-      'address': address,
-    };
-  }
+  Map<String, String> toJson() => <String, String>{
+        'address': address,
+      };
 }
 
-final Map<String, Order> orderByUserId = {};
+final Map<String, Order> orderByUserId = <String, Order>{};
