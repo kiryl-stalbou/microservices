@@ -15,6 +15,7 @@ dependencies:
     git:
       url: https://github.com/kiryl-stalbou/microservices.git
       path: core
+      ref: main
 
 dev_dependencies:
   http: ^1.1.0

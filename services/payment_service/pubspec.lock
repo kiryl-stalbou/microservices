@@ -66,8 +66,8 @@ packages:
     dependency: "direct main"
     description:
       path: core
-      ref: HEAD
-      resolved-ref: a397ca9f27ee1583739ad20b485aec73edbc1f81
+      ref: main
+      resolved-ref: "8fc75c62bc15a302dbb1b88fa4a795ad777aca04"
       url: "https://github.com/kiryl-stalbou/microservices.git"
     source: git
     version: "1.0.0"
